@@ -7,13 +7,15 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var coolRouter = require('./routes/cool');
 const catalogRouter = require('./routes/catalog');
+const compression = require("compression");
 
 var app = express();
 
 const mongoose = require("mongoose");
 const { mainModule } = require('process');
 mongoose.set("strictQuery", false);
-const mongoDB = "mongodb+srv://myAtlasDBUser:admin@myatlasclusteredu.ucn9vew.mongodb.net/?retryWrites=true&w=majority";
+const dev_db_url = "mongodb+srv://myAtlasDBUser:admin@myatlasclusteredu.ucn9vew.mongodb.net/?retryWrites=true&w=majority";
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 
 main().catch((err) => console.log(err));
 async function main() {
@@ -28,6 +30,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
